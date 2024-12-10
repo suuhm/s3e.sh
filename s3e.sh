@@ -55,24 +55,32 @@ file_editor() {
             ;;
         2) # Delete lines
             read -rp "Enter the range of line numbers to delete (e.g., 3-5): " range
-            if sed -i "${range}d" "$file_path"; then
-                echo "Lines deleted successfully."
+            if echo "$range" | grep -qE '^[0-9]+-[0-9]+$'; then
+                start_line=$(echo "$range" | cut -d- -f1)
+                end_line=$(echo "$range" | cut -d- -f2)
+                sed -i.bak "${start_line},${end_line}d" "$file_path"
+                echo "Lines $start_line to $end_line deleted successfully."
             else
-                echo "Failed to delete lines. Check the line numbers."
+                echo "Invalid range. Please use the format start-end (e.g., 2-112)."
             fi
             ;;
         3) # Replace lines
             read -rp "Enter the range of line numbers to replace (e.g., 2-4): " range
-            echo "Enter the new lines to replace the range (type 'EOF' on a new line to finish):"
-            local new_text=""
-            while IFS= read -r line; do
-                [[ "$line" == "EOF" ]] && break
-                new_text+="$line"$'\n'
-            done
-            if sed -i "${range}s/.*/$(echo "$new_text" | sed 's:/:\\/:g')/" "$file_path"; then
-                echo "Lines replaced successfully."
+            if echo "$range" | grep -qE '^[0-9]+-[0-9]+$'; then
+                start_line=$(echo "$range" | cut -d- -f1)
+                end_line=$(echo "$range" | cut -d- -f2)
+                echo "Enter the new lines to replace the range (type 'EOF' on a new line to finish):"
+                local new_text=""
+                while IFS= read -r line; do
+                    [[ "$line" == "EOF" ]] && break
+                    new_text+="$line"$'\n'
+                done
+                sed -i.bak "${start_line},${end_line}d" "$file_path" # Delete the range first
+                echo "$new_text" | sed -e "${start_line}r /dev/stdin" -e "${start_line}q" "$file_path" > temp_file
+                mv temp_file "$file_path"
+                echo "Lines $start_line to $end_line replaced successfully."
             else
-                echo "Failed to replace lines. Check the range and input."
+                echo "Invalid range. Please use the format start-end (e.g., 2-112)."
             fi
             ;;
         4) # Save and exit
