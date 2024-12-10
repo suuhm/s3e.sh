@@ -19,11 +19,10 @@ display_banner() {
     echo "                                                                          "
     echo ""
     echo "=========================================================================="
-    echo "            Simple Shell Editor (S3E)                                     "
+    echo "            Simple Shell Editor (S3E)  - (c) 2024 by suuhmer              "
     echo "=========================================================================="
 }
 
-# Main file editor function
 file_editor() {
     local file_path="$1"
     while true; do
