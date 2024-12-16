@@ -61,7 +61,7 @@ file_editor() {
             if echo "$range" | grep -qE '^[0-9]\+-[0-9]\+$'; then
                 start_line=$(echo "$range" | cut -d- -f1)
                 end_line=$(echo "$range" | cut -d- -f2)
-                sed -i.bak "${start_line},${end_line}d" "$file_path"
+                sed -i "${start_line},${end_line}d" "$file_path"
                 echo "Lines $start_line to $end_line deleted successfully."
             else
                 echo "Invalid range. Please use the format start-end (e.g., 2-5)."
@@ -81,7 +81,7 @@ file_editor() {
                     new_text="${new_text}${line}\n"
                 done
                 # Replace lines
-                sed -i.bak "${start_line},${end_line}d" "$file_path"
+                sed -i "${start_line},${end_line}d" "$file_path"
                 sed "${start_line}q" "$file_path" | (
                     cat
                     printf "%b" "$new_text"
