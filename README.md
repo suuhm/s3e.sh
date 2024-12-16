@@ -2,6 +2,11 @@
 
 **S3E.sh** is a minimalistic, shell-based text editor designed for environments where traditional editors like `nano`, `vi`, or `vim` may not be available or functional. Whether you're working on a headless system, in a containerized environment, or with restricted binaries, **S3E.sh** offers an easy-to-use alternative to quickly create and edit text files directly from the command line.
 
+**s3e_busybox.sh** is a even more minimalistic script rewritten in ash and compartibel for embedded systems like firetv adb shell or busybox systems..
+
+![grafik](https://github.com/user-attachments/assets/776928cd-974c-4c7f-9ca2-6679634fbc6f)
+
+
 ## **Why S3E.sh?**
 
 While tools like `nano`, `vi`, and `vim` are ubiquitous in Unix-based systems, there are situations where they are either unavailable or impractical. **S3E.sh** fills this gap by offering a simple, lightweight text editor that works anywhere a bash shell is available. Some of the scenarios where this tool shines include:
