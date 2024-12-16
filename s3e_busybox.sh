@@ -26,6 +26,8 @@ display_banner() {
 
 file_editor() {
     file_path="$1"
+    # Without saving in progress:
+    # tmp_file=`cat $file_path`
     while true; do
         clear
         display_banner
@@ -58,10 +60,12 @@ file_editor() {
         2) # Delete lines
             printf "Enter the range of line numbers to delete (e.g., 3-5): "
             read range
-            if echo "$range" | grep -qE '^[0-9]\+-[0-9]\+$'; then
+            # Adding Posix compartible \.+ replacements
+            if echo "$range" | grep -q '^[0-9]\{1,\}-[0-9]\{1,\}$'; then
                 start_line=$(echo "$range" | cut -d- -f1)
                 end_line=$(echo "$range" | cut -d- -f2)
                 sed -i "${start_line},${end_line}d" "$file_path"
+                # tmp_file = $(sed "${start_line},${end_line}d" "$file_path")
                 echo "Lines $start_line to $end_line deleted successfully."
             else
                 echo "Invalid range. Please use the format start-end (e.g., 2-5)."
@@ -70,7 +74,7 @@ file_editor() {
         3) # Replace lines
             printf "Enter the range of line numbers to replace (e.g., 2-4): "
             read range
-            if echo "$range" | grep -qE '^[0-9]\+-[0-9]\+$'; then
+            if echo "$range" | grep -q '^[0-9]\{1,\}-[0-9]\{1,\}$'; then
                 start_line=$(echo "$range" | cut -d- -f1)
                 end_line=$(echo "$range" | cut -d- -f2)
                 echo "Enter the new lines to replace the range (type 'EOF' on a new line to finish):"
@@ -80,8 +84,8 @@ file_editor() {
                     [ "$line" = "EOF" ] && break
                     new_text="${new_text}${line}\n"
                 done
-                # Replace lines
                 sed -i "${start_line},${end_line}d" "$file_path"
+                tmp_file = $(sed "${start_line},${end_line}d" "$file_path")
                 sed "${start_line}q" "$file_path" | (
                     cat
                     printf "%b" "$new_text"
@@ -98,7 +102,7 @@ file_editor() {
             break
             ;;
         5) 
-            echo "Exiting without saving."
+            echo "Exiting without saving. (WiP)"
             exit 0
             ;;
         *)
