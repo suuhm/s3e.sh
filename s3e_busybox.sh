@@ -29,9 +29,9 @@ file_editor() {
     while true; do
         clear
         display_banner
-        echo "Editing file: $file_path"
+        echo; echo "Editing file: $file_path"
         echo "---------------------------------"
-        cat -n "$file_path" 2>/dev/null || echo "(File does not exist yet)"
+        cat -n "$file_path" 2>/dev/null || cat_n "$file_path" 2>/dev/null || echo "(File does not exist yet)"
         echo "---------------------------------"
         echo "Options:"
         echo "1. Add lines"
@@ -106,6 +106,21 @@ file_editor() {
             ;;
         esac
     done
+}
+
+# cat -n alternative functon
+cat_n() {
+    file_path="$1"
+    if [ ! -f "$file_path" ]; then
+        echo "(File does not exist yet)"
+        return
+    fi
+
+    line_num=1
+    while IFS= read -r line; do
+        printf "%4d  %s\n" "$line_num" "$line"
+        line_num=$((line_num + 1))
+    done < "$file_path"
 }
 
 if [ -z "$1" ]; then
